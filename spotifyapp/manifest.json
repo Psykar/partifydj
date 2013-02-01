@@ -15,6 +15,7 @@
     ],
     "RequiredPermissions": [
         "http://www.spartify.com",
+		"https://chart.googleapis.com",
         "http://*.facebook.com",
         "https://*.facebook.com",
         "https://connect.facebook.net"
