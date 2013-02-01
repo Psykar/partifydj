@@ -5,6 +5,8 @@ sp = getSpotifyApi();
 var m = sp.require('sp://import/scripts/api/models');
 var facebook = sp.require('facebook');
 
+var track_data = [] // holds data for adding votes from playlist (will be removed when server can handle this)
+
 exports.init = init;
 
 function createHandler(method, argNames, callback) {
@@ -96,6 +98,7 @@ var el = {
   queue: $('#queue'),
   queueHeader: $('.view-party h2'),
   search: $('#search'),
+  dropbox: $('#dropbox'),
   searchResults: $('#search-results'),
   title: $('#title'),
   when: $('#when'),
@@ -260,6 +263,9 @@ function init() {
     playlist = null;
     localStorage.partyCode = '';
     el.body.attr('id', 'view-start');
+	while(el.dropbox[0].childNodes.length != 1){
+		el.dropbox[0].removeChild(el.dropbox[0].childNodes[el.dropbox[0].childNodes.length-1]);
+	}
   });
 
   // Search code.
@@ -354,4 +360,46 @@ function init() {
 
     currentTrack = m.player.track;
   });
+
+  el.dropbox[0].addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/html', this.innerHTML);
+      e.dataTransfer.effectAllowed = 'copy';
+  }, false);
+
+  el.dropbox[0].addEventListener('dragenter', function(e){
+      if (e.preventDefault) e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      this.classList.add('over');
+  }, false);
+
+  el.dropbox[0].addEventListener('dragover', function(e){
+      if (e.preventDefault) e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      return false;
+  }, false);
+
+  el.dropbox[0].addEventListener('drop', function(e){
+      if (e.preventDefault) e.preventDefault();
+      var dropped_playlist = m.Playlist.fromURI(e.dataTransfer.getData('text'));
+      console.log(dropped_playlist.uri);
+      this.classList.remove('over');
+      var success_message = document.createElement('p');
+      success_message.innerHTML = 'Partying with playlist: ' + dropped_playlist.name;
+      this.appendChild(success_message);
+	  for (var i = 0, l = dropped_playlist.tracks.length; i < l; i++){
+			track_data.push(dropped_playlist.tracks[i])
+			playlistVote({
+	          album: dropped_playlist.tracks[i].album.name,
+	          artist: dropped_playlist.tracks[i].artists[0].name,
+	          length: dropped_playlist.tracks[i].duration,
+	          title: dropped_playlist.tracks[i].name,
+	          uri: dropped_playlist.tracks[i].uri
+	        }, i);
+      }
+  }, false);  
+
+}
+
+function playlistVote(obj, pos){
+	setTimeout(function(){vote(obj);}, pos*1000);
 }
