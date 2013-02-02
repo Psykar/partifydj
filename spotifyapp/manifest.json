@@ -3,12 +3,12 @@
         "core": ["private"]
     },
     "AppIcon": {
-        "36x18": "spartify-icon.png"
+        "36x18": "partifydj-icon-18.png"
     },
     "AppName": {
-        "en": "Spartify"
+        "en": "PartifyDJ"
     },
-    "BundleIdentifier": "spartify",
+    "BundleIdentifier": "partifydj",
     "BundleType": "Application",
     "SupportedLanguages": [
         "en"

@@ -1,19 +1,5 @@
 @import url(sp://import/css/adam.css);
 
-@font-face {
-	font-family: 'Love Ya Like A Sister';
-	font-style: normal;
-	font-weight: normal;
-	src: local('Love Ya Like A Sister Regular'), local('LoveYaLikeASister-Regular'), url('LoveYaLikeASister.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: 'Rancho';
-	font-style: normal;
-	font-weight: 400;
-	src: local('Rancho'), url('Rancho-Regular.ttf') format('truetype');
-}
-
 @-webkit-keyframes vote-click {
 	0% { box-shadow: #06c 0 0 15px inset; }
 	100% { box-shadow: transparent 0 0 15px inset; }
