@@ -128,7 +128,8 @@ function fillTrackList(element, tracks) {
         .append(
           $('<span class="title">').html(track.title),
           $('<span class="artist">').html(track.artist),
-          $('<span class="vote">+1</span>'))
+          $('<span class="vote">+1</span>'),
+		  $('<span class="delete">-1</span>'))
         .appendTo(element);
 	   li.attr('title', track.title);
     } else {
@@ -323,20 +324,29 @@ function init() {
 
   $('.track-list li').live('click', function () {
     var li = $(this);
+	
+	if(!li.hasClass('delete')){
+    	// Limit clicking on an item to once per 1 sec.
+	    if (li.hasClass('voted')) return;
+	    li.addClass('voted');
+	    el.search.val('').focus();
+	    setTimeout(function () {
+	      el.searchResults.empty();
+	      el.searchResults.css('height', 0);
 
-    // Limit clicking on an item to once per 1 sec.
-    if (li.hasClass('voted')) return;
-    li.addClass('voted');
-    el.search.val('').focus();
-    setTimeout(function () {
-      el.searchResults.empty();
-      el.searchResults.css('height', 0);
-
-      li.removeClass('voted');
-    }, 1000);
-	$('.track-list-tooltip').fadeOut(100);
-    $('.track-list-tooltip').remove();
-    vote(li.data('track'));
+	      li.removeClass('voted');
+	    }, 1000);
+		$('.track-list-tooltip').fadeOut(100);
+	    $('.track-list-tooltip').remove();
+	    vote(li.data('track'));
+	}else{
+		var removeItem = li.data('track');
+		queue = jQuery.grep(queue, function(value) {
+		  return value != removeItem;
+		});
+		li.fadeOut(200);
+		li.remove();
+	}
   });
 
   if (localStorage.partyCode) {
@@ -414,7 +424,6 @@ function init() {
 	    $('.track-list-tooltip')
 			.css({left:this.position.left-20})
 			.css({top:this.position.top-65});
-	    //$('.track-list-tooltip').fadeIn(300);
   	}).live('mouseleave',
 	     function() {
 	       $('.track-list-tooltip').fadeOut(100);
@@ -422,7 +431,19 @@ function init() {
 	         this.title = this.tip;
 	     }
 	);
-	
+
+   $('#edit-queue').click(
+		function(){
+			var list = $('.track-list li');
+			if(!list.hasClass('delete')){
+				list.addClass('delete');
+				$(this).text('done');
+			}else{
+				list.removeClass('delete');
+				$(this).text('edit');
+			}
+		}
+	);
 }
 
 function playlistVote(obj, pos){

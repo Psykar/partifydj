@@ -181,6 +181,40 @@ section {
 	top: 0;
 }
 
+.track-list .delete {
+	font-size: 32px;
+	font-weight: bold;
+	line-height: 48px;
+	position: absolute;
+	padding-right: 12px;
+	right: 0;
+	top: 0;
+}
+
+.track-list li.delete:hover .delete {
+	color: #900;
+	visibility: visible;
+	text-shadow: #333 0 1px 0;
+	background: -webkit-linear-gradient(rgba(0, 0, 0, .9), rgba(0, 0, 0, .1) 80%, rgba(0, 0, 0, .9)), url(tile.png);
+}
+
+.track-list li.delete {
+	background: -webkit-linear-gradient(rgba(0, 0, 0, .9), rgba(0, 0, 0, .1) 80%, rgba(0, 0, 0, .9)), url(tile.png);
+	border-color: #fff;
+	border-style: solid;
+	border-width: 1px 1px 1px;
+	box-sizing: border-box;
+	cursor: pointer;
+	display: block;
+	height: 50px;
+	padding: 5px;
+	position: absolute;
+	text-align: left;
+	-webkit-transition: top 500ms;
+	user-select: none;
+	width: 100%;
+}
+
 .track-list li {
 	background: -webkit-linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .1) 80%, rgba(0, 0, 0, .3)), url(tile.png);
 	border-color: #111;
@@ -243,6 +277,10 @@ section {
 }
 
 .track-list .vote {
+	visibility: hidden;
+}
+
+.track-list span.delete {
 	visibility: hidden;
 }
 
