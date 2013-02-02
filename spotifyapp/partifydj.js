@@ -20,7 +20,7 @@ function createHandler(method, argNames, callback) {
     }
     var success = arguments[i], error = arguments[i + 1];
 
-    $.getJSON('http://www.spartify.com/api/' + method, args, function (data) {
+    $.getJSON('http://partifydj.appspot.com/api/' + method, args, function (data) {
       if (data.status != 'success') {
         console.error('API call', method, 'failed:', data.response.type, data.response.message);
         if (error) error(data);
@@ -81,6 +81,11 @@ var api = {
     }),
   vote: createHandler('vote',
     ['party_id', 'user_id', 'track_uri'],
+    function (data, success, error) {
+      success();
+    }),
+  removeTrack: createHandler('remove',
+	['party_id', 'track_uri'],
     function (data, success, error) {
       success();
     })
@@ -209,7 +214,7 @@ function enterParty(code) {
   el.queueHeader.hide();
   localStorage.partyCode = code;
   el.partyCode.text(localStorage.partyCode);
-  el.qrCode.attr('src', 'https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=http://spartify.com/' + localStorage.partyCode);
+  el.qrCode.attr('src', 'https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=http://partifydj.appspot.com/' + localStorage.partyCode);
   el.body.attr('id', 'view-party');
 
   playlist = null;
@@ -239,7 +244,7 @@ function init() {
                   facebook.updateEvent(fbEvent.id, {
                       description: el.description.val() + '\n\n' +
                       'Add songs you want to hear at the party here:\n' +
-                      'http://www.spartify.com/' + party.id});
+                      'http://partifydj.appspot.com/' + party.id});
                   enterParty(party.id);
                   tracksCallback(party);
                 },
@@ -341,6 +346,7 @@ function init() {
 	    vote(li.data('track'));
 	}else{
 		var removeItem = li.data('track');
+		api.removeTrack(localStorage.partyCode, removeItem.uri, null, null);
 		queue = jQuery.grep(queue, function(value) {
 		  return value != removeItem;
 		});

@@ -14,7 +14,7 @@
         "en"
     ],
     "RequiredPermissions": [
-        "http://www.spartify.com",
+        "http://partifydj.appspot.com/",
 		"https://chart.googleapis.com",
         "http://*.facebook.com",
         "https://*.facebook.com",
