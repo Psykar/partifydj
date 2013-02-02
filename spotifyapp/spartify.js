@@ -334,7 +334,8 @@ function init() {
 
       li.removeClass('voted');
     }, 1000);
-
+	$('.track-list-tooltip').fadeOut(100);
+    $('.track-list-tooltip').remove();
     vote(li.data('track'));
   });
 
@@ -351,6 +352,7 @@ function init() {
       if (queue.length > 1) {
         console.log('BAM!', queue[1].title);
         playlist.add(queue[1].uri);
+		queue.splice(0,1);
         m.player.play(playlist.get(0), playlist, 0);
       }
 
