@@ -5,8 +5,6 @@ sp = getSpotifyApi();
 var m = sp.require('sp://import/scripts/api/models');
 var facebook = sp.require('facebook');
 
-var track_data = [] // holds data for adding votes from playlist (will be removed when server can handle this)
-
 exports.init = init;
 
 function createHandler(method, argNames, callback) {
@@ -128,10 +126,11 @@ function fillTrackList(element, tracks) {
         .data('track', track)
         .attr('data-uri', track.uri)
         .append(
-          $('<span class="title">').text(track.title),
-          $('<span class="artist">').text(track.artist),
+          $('<span class="title">').html(track.title),
+          $('<span class="artist">').html(track.artist),
           $('<span class="vote">+1</span>'))
         .appendTo(element);
+	   li.attr('title', track.title);
     } else {
       traversed.push(li[0]);
     }
@@ -372,6 +371,10 @@ function init() {
       this.classList.add('over');
   }, false);
 
+  el.dropbox[0].addEventListener('dragleave', function(e){
+	this.classList.remove('over');
+  }, false);
+
   el.dropbox[0].addEventListener('dragover', function(e){
       if (e.preventDefault) e.preventDefault();
       e.dataTransfer.dropEffect = 'copy';
@@ -387,7 +390,6 @@ function init() {
       success_message.innerHTML = 'Partying with playlist: ' + dropped_playlist.name;
       this.appendChild(success_message);
 	  for (var i = 0, l = dropped_playlist.tracks.length; i < l; i++){
-			track_data.push(dropped_playlist.tracks[i])
 			playlistVote({
 	          album: dropped_playlist.tracks[i].album.name,
 	          artist: dropped_playlist.tracks[i].artists[0].name,
@@ -398,6 +400,27 @@ function init() {
       }
   }, false);  
 
+  $('.track-list li').live('mouseenter',
+    function() {
+	    this.tip = this.title;
+	    $('<div class="track-list-tooltip"></div>')
+			.html(this.tip)
+			.appendTo('body')
+	        .fadeIn(300);
+	    this.title = "";
+	    this.position = $(this).offset();
+	    $('.track-list-tooltip')
+			.css({left:this.position.left-20})
+			.css({top:this.position.top-65});
+	    //$('.track-list-tooltip').fadeIn(300);
+  	}).live('mouseleave',
+	     function() {
+	       $('.track-list-tooltip').fadeOut(100);
+	       $('.track-list-tooltip').remove();
+	         this.title = this.tip;
+	     }
+	);
+	
 }
 
 function playlistVote(obj, pos){
