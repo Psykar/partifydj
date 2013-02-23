@@ -214,7 +214,7 @@ function enterParty(code) {
   el.queueHeader.hide();
   localStorage.partyCode = code;
   el.partyCode.text(localStorage.partyCode);
-  el.qrCode.attr('src', 'https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=http://partifydj.appspot.com/' + localStorage.partyCode);
+  el.qrCode.attr('src', 'https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http://partifydj.appspot.com/' + localStorage.partyCode);
   el.body.attr('id', 'view-party');
 
   playlist = null;
@@ -297,18 +297,26 @@ function init() {
     }
 
     function search() {
-      counter++;
-      sp.core.suggestSearch(query, {
-        onSuccess: (function (i) {
-          return function (data) {
-            if (counter > i) {
-              // Another search is already in progress.
-              return;
-            }
-            handleResults(data.tracks);
-          };
-        })(counter)
+//      counter++;
+      var search = new m.Search(query);
+      search.localResults = m.LOCALSEARCHRESULTS.PREPEND;
+      search.SEARCHTYPE = m.SEARCHTYPE.SUGGESTION;
+      search.observe(m.EVENT.CHANGE, function() {
+    	  handleResults(search.tracks);
       });
+      search.appendNext();
+      
+//      sp.core.suggestSearch(query, {
+//        onSuccess: (function (i) {
+//          return function (data) {
+//            if (counter > i) {
+//              // Another search is already in progress.
+//              return;
+//            }
+//            handleResults(data.tracks);
+//          };
+//        })(counter)
+//      });
     }
 
     function handler() {
