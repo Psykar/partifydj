@@ -11,12 +11,12 @@ class Party(object):
         self.id = id
         self._queue = Queue(self.id)
 
-    def pop_track(self):
+    def pop_track(self, autodj):
         track, votes = self._queue.pop()
         if not track:
             # queue is empty, should never happen...
             return None
-        if len(self._queue) < config.PARTY_QUEUE_PANIC:
+        if autodj and len(self._queue) < config.PARTY_QUEUE_PANIC:
             for t in find_similar_tracks(self._queue.all):
                 # add simillar track to queue, no votes.
                 self._queue.add(t.to_dict(), 0)
@@ -38,7 +38,7 @@ class Party(object):
             stores.votes.timeout_store(user_vote_key, 1, config.USER_REPEAT_VOTE_WAIT)
 
     def remove(self, track_uri):
-	    self._queue.remove(track_uri)
+        self._queue.remove(track_uri)
 
 def exists(party_id):
     return True if party_id in stores.parties else False

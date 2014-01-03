@@ -39,8 +39,8 @@ class API(object):
                     }
 
     @validate
-    def pop(self, party_id):
-        party.Party(party_id).pop_track()
+    def pop(self, party_id, autodj):
+        party.Party(party_id).pop_track(autodj)
         return None
 
     @validate
@@ -53,7 +53,7 @@ class API(object):
 
     @validate
     def remove(self, party_id, track_uri):
-	    party.Party(party_id).remove(track_uri)
+        party.Party(party_id).remove(track_uri)
 
 
 class SpartifyService(API, util.JsonService):

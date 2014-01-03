@@ -49,7 +49,7 @@ var spartify = function () {
       success(data.response);
     });
   Api.prototype.pop = Api.createHandler('pop',
-    ['party_id'],
+    ['party_id', 'autodj'],
     function (data, success, error) {
       success();
     });
@@ -161,9 +161,10 @@ var spartify = function () {
           .append(
             $('<span class="title">').text(song.title),
             $('<span class="artist">').text(song.artist),
-            $('<span class="vote">+1</span>'))
+            $('<span class="vote">').text('+' + song.votes))
           .appendTo(list);
       } else {
+        li.children('.vote').text('+' + song.votes);
         traversed.push(li[0]);
       }
 
@@ -205,7 +206,7 @@ var spartify = function () {
           .css('background', '-webkit-linear-gradient(' + decl + ')');
       },
       complete: function () {
-        spartify.api.pop(getPartyCode(),
+        spartify.api.pop(getPartyCode(), $('#autodj')[0].checked,
           function () {
             deferGetSongs();
           },
@@ -249,6 +250,7 @@ var spartify = function () {
       });
 
     // Simulate the addition of the track to make UI feel snappier.
+    song.votes += 1;
     for (var i = 0; i < queue.length; i++) {
       if (queue[i].uri == song.uri) return;
     }
@@ -391,7 +393,8 @@ var spartify = function () {
           artist: song.artists[0].name,
           length: song.length,
           title: song.name,
-          uri: song.href
+          uri: song.href,
+          votes: song.votes
         });
       }
       fillSongList(results, songs);

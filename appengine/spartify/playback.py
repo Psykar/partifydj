@@ -34,8 +34,10 @@ class Queue(object):
 
     @property
     def all(self):
-        return (track for track, votes in self._queue)
- 
+        for track, votes in self._queue:
+            track['votes'] = votes
+            yield track
+
     def pop(self):
         try:
             track, votes = self._queue.pop(0)
@@ -67,9 +69,9 @@ class Queue(object):
         self._save()
 
     def remove(self, track_uri):
-	    pos = index_of(self._queue, track_uri, lambda x: x[0]['uri'])
-	    if pos is None:
-		    pass #The entry was not found. Ignore
-	    else:
-		    self._queue.pop(pos) #pop the element and trash it
-		    self._save()
+        pos = index_of(self._queue, track_uri, lambda x: x[0]['uri'])
+        if pos is None:
+            pass #The entry was not found. Ignore
+        else:
+            self._queue.pop(pos) #pop the element and trash it
+            self._save()

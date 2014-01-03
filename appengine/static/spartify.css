@@ -135,6 +135,10 @@ input {
 	width: 100%;
 }
 
+input[type=checkbox] {
+    width: auto;
+}
+
 input:focus {
 	border-color: #555;
 }
