@@ -1,3 +1,9 @@
+var appURL = 'http://localhost:8080'
+
+if (typeof require === 'undefined') {
+    require = null;
+}
+
 var spartify = function () {
   function Api() {}
   Api.createHandler = function (method, argNames, callback) {
@@ -12,8 +18,8 @@ var spartify = function () {
         args[argNames[i]] = JSON.stringify(arguments[i]);
       }
       var success = arguments[i], error = arguments[i + 1];
-
-      $.getJSON('/api/' + method, args, function (data) {
+      var url = appURL + '/api/';
+      $.getJSON(url + method, args, function (data) {
         if (data.status != 'success') {
           console.error('API call', method, 'failed:', data.response.type, data.response.message);
           if (error) error(data);
@@ -102,11 +108,12 @@ var spartify = function () {
 
   // Custom pushState that also registers Google Analytics page views.
   pushState = function pushState(state, title, url) {
+    if (require) return; // If we are running from spotify, we can't push the state.
     var path = location.pathname;
     history.pushState(state, title, url);
-    if (location.pathname != path) {
-      _gaq.push(['_trackPageview', location.pathname]);
-    }
+//    if (location.pathname != path) {
+//      _gaq.push(['_trackPageview', location.pathname]);
+//    }
   };
 
   function go(page) {
@@ -153,7 +160,6 @@ var spartify = function () {
         console.error('Broken song', song, songs);
         return;
       }
-
       if (!li.length) {
         li = $('<li>')
           .data('song', song)
@@ -174,6 +180,13 @@ var spartify = function () {
       li.css('top', i * 50);
     }
     lis.not(traversed).remove();
+  }
+
+  function onChange() {
+      spartify.api.pop(getPartyCode(), $('#autodj')[0].checked,
+              function () {
+                  deferGetSongs();
+              }, null);
   }
 
   function play() {
@@ -206,16 +219,26 @@ var spartify = function () {
           .css('background', '-webkit-linear-gradient(' + decl + ')');
       },
       complete: function () {
-        spartify.api.pop(getPartyCode(), $('#autodj')[0].checked,
-          function () {
-            deferGetSongs();
-          },
-          null);
+        // If we are running from spotify, then we use a listener instead of
+        // a timeout.
+        if (!require) {
+            onChange()
+        }
       }
     });
 
     playing = song.uri;
-    if ($.browser.webkit) {
+    if (require) {
+        require(['$api/models'], function(models) {
+            track = models.Track.fromURI(playing);
+            models.player.removeEventListener('change', onChange);
+            promise = models.player.playTrack(track);
+            promise.always(function() {
+                models.player.addEventListener('change', onChange);
+            })
+        })
+
+    } else if ($.browser.webkit) {
       $('#open').attr('src', playing);
     } else {
       location.href = playing;
@@ -394,7 +417,7 @@ var spartify = function () {
           length: song.length,
           title: song.name,
           uri: song.href,
-          votes: song.votes
+          votes: song.votes || 0
         });
       }
       fillSongList(results, songs);
@@ -449,6 +472,7 @@ var spartify = function () {
   function goByPath(path) {
     switch (path) {
       case '/':
+      case '/index.html':
         go('main');
         break;
       case '/about':

@@ -2,40 +2,47 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<link href="partifydj.css" rel="stylesheet">
 	<title>PartifyDJ</title>
+    <link href="http://localhost:8080/static/spartify.css" rel="stylesheet">
 </head>
 <body id="view-start">
-	<h1>PartifyDJ</h1>
-	<section class="view-start">
-		<p><input id="create-fb-event" type="checkbox" checked><label for="create-fb-event">Create Facebook event!</label></p>
-		<div id="fb-event-details">
-			<h3>Enter your FB Party Details<h3>
-			<p><input id="title" placeholder="Party name"></p>
-			<p><textarea id="description" placeholder="Description of the party"></textarea></p>
-			<p><input id="where" placeholder="Location"></p>
-			<p><input id="when" placeholder="When?"></p>
-		</div>
-		<button class="create nav" id="create-party">Create the Party!</button>
-	</section>
-	<section class="view-party">
-		<p class="qrcode"><img id="qr-code" /></p>
-		<p class="message">Go to partifydj.appspot.com on your mobile, enter this code to start rockin' out: <code id="party-code">XXXXX</code></p>
-		<div style="clear:both;"></div>
-		<div id="dropbox">Drag a playlist here to add it to the queue</div>
-		<p><input id="search" placeholder="Search for songs"></p>
-		<ul class="track-list" id="search-results"></ul>
-		<h2>Queue</h2>
-		<a id="edit-queue" href="#edit">edit</a>
-		<ul class="track-list" id="queue"></ul>
-		<p><button class="cancel nav" id="leave-party">Leave Party :(</button></p>
-	</section>
-	<script src="jquery-1.7.min.js"></script>
-	<script>
-	var sp = getSpotifyApi();
-	partifydj = sp.require('partifydj');
-	partifydj.init();
-	</script>
-	<script src="fbstuff.js"></script>
+	<section id="intro">
+	<h1><a class="go-main" href="/">PartifyDJ</a></h1>
+	<p class="p-main" id="info">Host a party and let guests choose what songs to rock out to with a little help from our friend <a href="http://www.spotify.com/">Spotify</a>. No more huddling in front of one computer or messing up the queue! All drunk?? No worries we'll take care of the tunes for you!
+</section>
+<section class="p-main" id="actions">
+	<p id="continue" style="display: none;"><button class="nav">Continue XXXXX</button>
+	<ul id="fb-parties"></ul>
+	<p><button class="nav" id="go-join">Join a party</button>
+	<p><button class="nav create" id="start">Start a party!</button>
+</section>
+<section class="p-join" id="party-joiner">
+	<p><input id="join-party-code" placeholder="Enter party code here">
+	<p><button class="nav create" id="join">Join!</button>
+	<p><button class="nav go-main">Go back</button>
+</section>
+<section class="p-party" id="party-room">
+	<p id="party-code">Party code goes here
+	<p><input id="autodj" name="audodj" value="autodj" type="checkbox">
+    <label for="autodj">Use auto dj if nothing is queued?</label>    
+	<p><input id="search" placeholder="Search for songs">
+	<ul class="song-list" id="results"></ul>
+	<h2>Queue</h2>
+	<ul class="song-list" id="queue"></ul>
+	<p><button class="nav cancel go-main">Leave party :(</button>
+</section>
+<section class="p-about" id="about">
+	<h2>About</h2>
+	<p>PartifyDJ was developed by Stephane Rufer from a fork of <a href="www.spartify.com">Spartify</a>.</p>
+	<p>PartifyDJ lets anyone with a smart phone go to www.partifydj.apppspot.com and enter
+	the "party code", and then vote up the song(s) they want to hear next.
+</section>
+<section id="derp">
+	<p>By Stephane Rufer.
+	<p><a class="go-about" href="/about">read more about Spartify here</a>.
+	<p><a href="http://the.echonest.com/"><img alt="Powered by The Echo Nest" src="http://the.echonest.com/media/images/logos/EN_P_on_White_Horizontal.gif"></a>
+</section>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script src="http://localhost:8080/static/spartify.js"></script>    
 </body>
 </html>
