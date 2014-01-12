@@ -19,5 +19,9 @@
         "http://*.facebook.com",
         "https://*.facebook.com",
         "https://connect.facebook.net"
-    ]
+    ],
+  "Dependencies": {
+    "api": "1.38.0",
+    "views": "1.18.1"
+  }
 }

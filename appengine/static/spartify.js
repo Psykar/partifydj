@@ -188,7 +188,9 @@ var spartify = function () {
                   deferGetSongs();
               }, null);
   }
-
+  function updatePlaylist() {
+      console.log("Playlist updated")
+  }
   function play() {
     if (!queue.length) return;
 
@@ -230,12 +232,21 @@ var spartify = function () {
     playing = song.uri;
     if (require) {
         require(['$api/models'], function(models) {
-            track = models.Track.fromURI(playing);
-            models.player.removeEventListener('change', onChange);
-            promise = models.player.playTrack(track);
-            promise.always(function() {
-                models.player.addEventListener('change', onChange);
+            models.Playlist.createTemporary('test').done(function(playlist) {
+                playlist.load('tracks').done(function() {
+                          playlist.addEventListener('change', updatePlaylist);
+                    track = models.Track.fromURI(playing);
+                    playlist.tracks.add(track)
+                    models.player.removeEventListener('change', onChange);
+                    models.player.playContext(playlist).always(function() {
+                        models.player.addEventListener('change', onChange);
+                    }).fail(function(player, error) {
+                        console.log(error);
+                        })
+                })
+
             })
+
         })
 
     } else if ($.browser.webkit) {
